@@ -1,0 +1,64 @@
+import requests
+from bs4 import BeautifulSoup
+import locale
+locale.setlocale( locale.LC_ALL, 'en_US.UTF-8' )
+
+def getPrice(data):
+    for price in data:
+        return price
+
+def priceConverter(price):
+    num = ""
+    for char in price:
+        if char == ".":
+            return(locale.atoi(num))
+        elif char != "$":
+            num += char
+    
+def getProduct(data):
+    for char in title:
+        return char
+
+
+#initiate variables:
+minPrice = 1000000
+bestProduct = ""
+    
+#generate URL list for price comparison
+URList = ["""https://www.amazon.com/ASUS-GeForce-Str
+ix-Graphics-STRIX-GTX1080-A8G-GAMING/dp/B01K5F8MJK/ref=sr_1_1?keywords=1080+gtx&qid=1584738007&sr=8-1"""]
+
+
+headers = {"User-Agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/' +
+            '537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36'}
+
+#Run Through List of URL's to determine cheapest price
+for webPage in URList:
+    page = requests.get(webPage, headers=headers)
+    soup = BeautifulSoup(page.content,'html.parser')
+
+    #makes parsing readable
+    soup1 = BeautifulSoup(soup.prettify(),'html.parser')
+
+    #Look for website so correct method is applied
+    weblist = {"amazon":
+    for website in weblist:
+        if website in webPage:
+            #website = amazon
+            setMethod = website
+            #return PRODUCT NAME
+            title = soup1.find(id="productTitle")
+            itemName = getProduct(title)
+    
+    
+
+    #Parse Price of Product
+    price = soup1.find(id="priceblock_ourprice")
+    
+    #return minPrice
+    itemPrice = priceConverter(getPrice(price))
+    if itemPrice < minPrice:
+        minPrice = itemPrice
+
+    
+    print(itemName, "\n", minPrice)
