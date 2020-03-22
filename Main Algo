@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import locale
+import smtplib
 locale.setlocale( locale.LC_ALL, 'en_US.UTF-8' )
 
 def getPrice(data):
@@ -19,18 +20,26 @@ def getProduct(data):
     for char in title:
         return char
 
-
-#initiate variables:
+#initiate variables: smallest price and name of said product
 minPrice = 1000000
 bestProduct = ""
+itemKeyIndex = 0
     
 #generate URL list for price comparison
-URList = ["""https://www.amazon.com/ASUS-GeForce-Str
-ix-Graphics-STRIX-GTX1080-A8G-GAMING/dp/B01K5F8MJK/ref=sr_1_1?keywords=1080+gtx&qid=1584738007&sr=8-1"""]
-
+URList = ["""https://www.amazon.com/EVGA-GeForce-Super-Gaming
+-08G-P4-3081-KR/dp/B07VJPNG1M/ref=sr_1_1?keywords=2080&qid=15
+84902518&sr=8-1""","""https://www.evga.com/products/product.a
+spx?pn=08G-P4-3081-KR"""]
 
 headers = {"User-Agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/' +
             '537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36'}
+
+#Map Website for HTML use
+    #method one: Prodcut Name
+    #method two: price of product
+weblist = ["amazon","evga"]
+method1 = ["productTitle","product-name"]
+method2 = ["priceblock_ourprice","LFrame_lblPrice"] 
 
 #Run Through List of URL's to determine cheapest price
 for webPage in URList:
@@ -41,19 +50,17 @@ for webPage in URList:
     soup1 = BeautifulSoup(soup.prettify(),'html.parser')
 
     #Look for website so correct method is applied
-    weblist = {"amazon":
     for website in weblist:
         if website in webPage:
-            #website = amazon
-            setMethod = website
+            #index to find appropriate method
+            itemKeyIndex = weblist.index(website)
+           
             #return PRODUCT NAME
-            title = soup1.find(id="productTitle")
+            title = soup1.find(id=method1[itemKeyIndex])
             itemName = getProduct(title)
-    
-    
-
+            
     #Parse Price of Product
-    price = soup1.find(id="priceblock_ourprice")
+    price = soup1.find(id=method2[itemKeyIndex])
     
     #return minPrice
     itemPrice = priceConverter(getPrice(price))
@@ -62,3 +69,4 @@ for webPage in URList:
 
     
     print(itemName, "\n", minPrice)
+    
